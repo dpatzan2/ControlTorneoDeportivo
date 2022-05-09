@@ -7,7 +7,7 @@ const fs = require('fs');
 
 function crearAdminPorDefecto() {
     var usuarioModelo = new Usuarios();
-    Usuarios.findOne({ username: 'ADMIN' }, (err, usuarioEncontrado) => {
+    Usuarios.findOne({ usuario: 'ADMIN' }, (err, usuarioEncontrado) => {
 
         if (!usuarioEncontrado) {
             usuarioModelo.usuario = 'ADMIN'
@@ -22,7 +22,7 @@ function crearAdminPorDefecto() {
                 })
             })
         } else {
-
+            console.log('no me cree')
         }
     })
 }

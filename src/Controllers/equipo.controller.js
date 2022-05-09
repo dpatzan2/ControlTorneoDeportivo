@@ -8,6 +8,7 @@ const PdfkitConstruct = require("pdfkit-construct");
 function listarEquiposLiga(req, res) {
   var idLiga;
   var UsuarioCreador;
+  var NombreEquipo = []
 
   if (req.user.rol == "ADMIN") {
     idLiga = req.params.idLiga;
@@ -30,12 +31,16 @@ function listarEquiposLiga(req, res) {
           .status(500)
           .send({ message: "No se pudo eliminar el equipo" });
 
+
+      console.table([equipoEliminado], [NombreEquipo.nombreEquipo]); 
+         
       return res.status(200).send({ Equipo: equipoEliminado });
     }).sort({
       pts: -1,
     });
   });
 }
+
 
 function listarEquiposLigaPDF(req, res) {
   var idLiga;

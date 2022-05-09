@@ -16,7 +16,7 @@ function crearPartido(req, res) {
         Jornadas.findById({ _id: idJornada }, (err, jornadaEncontrada) => {
             if (!jornadaEncontrada) return res.status(500).send({ message: 'No se encontro la jornada seleccionada' });
 
-            console.log(jornadaEncontrada.Liga)
+            //console.log(jornadaEncontrada.Liga)
 
             Equipos.findById({ _id: parametros.equipo1, UsuarioCreador: jornadaEncontrada.UsuarioCreador }, (err, equipo1Encontrado) => {
 
@@ -26,27 +26,29 @@ function crearPartido(req, res) {
 
                     if (!equipo2Encontrado) return res.status(500).send({ message: 'No se encontro el equipo 2 seleccionado' });
 
-                    Ligas.findById({ _id: equipo2Encontrado.Liga }, (err, ligaEncontradas) => {
+                    Ligas.findById({ _id: jornadaEncontrada.Liga }, (err, ligaEncontradas) => {
                         if (!ligaEncontradas) return res.status(500).send({ message: 'No se encontro la liga seleccionada' });
 
 
                         if (req.user.rol == 'Usuario' && req.user.sub != ligaEncontradas.UsuarioCreador) return res.status(500).send({ message: 'No puede agregar partidos no te pertenece a esta liga' });
-
+                        console.log(req.user.sub)
+                        console.log(ligaEncontradas)
                         Equipos.find({ Liga: ligaEncontradas._id }, (err, equiposLigaEncontrados) => {
                             if (err) return res.status(500).send({ message: 'Esta liga no tiene equipos aun' });
+                            if(!equiposLigaEncontrados)  return res.status(500).send({ message: 'No se enccontraron equipos'})
 
                             if (equiposLigaEncontrados.length % 2 == 0) {
                                 partidosMaximos = (equiposLigaEncontrados.length / 2)
-                                console.log(ligaEncontradas_id + 'a')
+                                console.log(partidosMaximos + 'A')
                             } else {
                                 partidosMaximos = (equiposLigaEncontrados.length - 1) / 2
-                                console.log(partidosMaximos)
+                                console.log(partidosMaximos + 'A')
                             }
 
-                            Partidos.find({ Liga: ligaEncontradas._id }, (err, partidosLigaEncontrados) => {
+                            Partidos.find({ Liga: ligaEncontradas._id, Jornada:  idJornada}, (err, partidosLigaEncontrados) => {
                                 if (!partidosLigaEncontrados) return res.status(500).send({ message: 'No se encontraron partidos en esta liga' });
 
-                                if (partidosLigaEncontrados.length >= partidosMaximos) return res.status(500).send({ message: 'Ha excedido los partidos por liga, hay un maximo de ' + partidosMaximos + ' por jornada' });
+                                if (partidosLigaEncontrados.length > partidosMaximos) return res.status(500).send({ message: 'Ha excedido los partidos por liga, hay un maximo de ' + partidosMaximos + ' por jornada' });
 
                                 Partidos.findOne({ equipo1: parametros.equipo1, Jornada: idJornada }, (err, equipo1Find) => {
                                     if (!equipo1Find) {
@@ -106,7 +108,8 @@ function editarDatosPartiddo(req, res) {
             Ligas.findById({ _id: partidoEncontrado.Liga }, (err, ligaEncontrada) => {
                 if (!ligaEncontrada) return res.status(500).send({ message: 'No se encontro la liga de este partido seleccionado' });
 
-                if (req.user.role == 'Usuario' && ligaEncontrada.UsuarioCreador != req.user.sub) return res.status(500).send({ message: 'Esta liga no te pertenece' });
+                if (req.user.rol == 'Usuario' && req.user.sub != ligaEncontrada.UsuarioCreador) return res.status(500).send({ message: 'Esta liga no te pertenece' });
+                console.log(req.user.sub, ligaEncontrada.UsuarioCreador)
 
                 Partidos.findByIdAndUpdate({ _id: idPart }, parametros, { new: true }, (err, marcadorActualizado) => {
                     if (err) return res.status(500).send({ message: 'Error en la peticion' });

@@ -94,7 +94,7 @@ function editarLiga(req, res) {
             });
         } else if (req.user.rol == 'ADMIN') {
             Ligas.findOne({ nombreLiga: parametros.nombreLiga }, (err, ligaEncotradas) => {
-                if (ligaEncotradas == null && liga == ligaEncotradas._id) {
+                if (ligaEncotradas == null) {
                     Ligas.findByIdAndUpdate({ _id: liga }, parametros, { new: true }, (err, ligaEditada) => {
                         if (err) return res.status(500).send({ message: 'Ocurrio un error al tratar de editar la liga' });
                         if (!ligaEditada) return res.status(500).send({ message: 'No se pudo editar los datos' });
