@@ -8,16 +8,18 @@ const bcrypt = require('bcrypt-nodejs');
 mongoose.Promise = global.Promise;
 
 
-mongoose.connect('mongodb://localhost:27017/ControlTorneoDeportivo', { useNewUrlParser: true, useUnifiedTopology: true}).then(() =>{
+mongoose.connect('mongodb+srv://dpatzan:YPsg2W84@cluster0.30co9.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true}).then(() =>{
     console.log("Se encuentra conectado a la base de datos");
 
-    app.listen(3000, function() {
-        console.log("hola mundo, voy a crear una app que hasta Mark Zuckerbeg me la va a querer comprar")
+    const port = process.env.PORT
+
+    app.listen(process.env.PORT || 3000, function() {
+        console.log(port)
         usuariosControlleri.crearAdminPorDefecto();
               
     })
 }).catch(error => console.log(error))
-
+   
 
 
 
